@@ -1,3 +1,4 @@
+#include <chrono>
 /******************************************************************************
  *  Copyright 2021 NXP
  *
@@ -65,7 +66,7 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   static uint32_t speed = SPI_BUS_SPEED;
   // Assign IO pins
   status_value = ConfigurePin();
-  if(status_value == -1)
+  if(status_value != NFCSTATUS_SUCCESS)
     return NFCSTATUS_INVALID_DEVICE;
   NXPLOG_TML_D("NFCHW - open SPI bus - %s\n", SPI_BUS);
 
@@ -76,6 +77,11 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
     Close(NULL);
     return (NFCSTATUS_INVALID_DEVICE);
   }
+  if (Fd == 0) {
+    int replacement=fcntl(Fd, F_DUPFD_CLOEXEC, 3);
+    close(Fd); Fd=replacement;
+    if (Fd < 0) { Close(NULL); return NFCSTATUS_INVALID_DEVICE; }
+  }
   *pLinkHandle = (void*)((intptr_t)Fd);
   NXPLOG_TML_D("NFC - open SPI device\n");
 
@@ -84,14 +90,16 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   if (status_value < 0) {
     NXPLOG_TML_E("Could not set SPIMode (WR)...ioctl fail (%s)\n",
                  strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
   status_value = ioctl(Fd, SPI_IOC_RD_MODE, &spi_mode);
   if (status_value < 0) {
     NXPLOG_TML_E("Could not get SPIMode (RD)...ioctl fail (%s)\n",
                  strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
   // set and get bits per word
@@ -99,7 +107,8 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   if (status_value < 0) {
     NXPLOG_TML_E("Could not set SPI bitsPerWord (WR)...ioctl fail (%s)\n",
                  strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
 
@@ -107,7 +116,8 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   if (status_value < 0) {
     NXPLOG_TML_E("Could not set SPI bitsPerWord (RD)...ioctl fail (%s)\n",
                  strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
 
@@ -116,7 +126,8 @@ NFCSTATUS NfccAltSpiTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   if (status_value < 0) {
     NXPLOG_TML_E("Could not set SPI max speed (WR)...ioctl fail (%s)\n",
                  strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
 
@@ -192,106 +203,32 @@ static int SpiRead(int pDevHandle, uint8_t* pBuffer, int nBytesToRead) {
 **                  -1        - read operation failure
 **
 *******************************************************************************/
-int NfccAltSpiTransport::Read(void* pDevHandle, uint8_t* pBuffer,
-                              int nNbBytesToRead) {
-  NXPLOG_TML_D("%s Enter", __func__);
-  int ret_Read;
-  int numRead = 0;
-  uint16_t totalBtyesToRead = 0;
-
-  int ret_Select;
-  struct timeval tv;
-  fd_set rfds;
-
-  UNUSED(nNbBytesToRead);
-  if (NULL == pDevHandle) {
-    NXPLOG_TML_E("%s devive handle is NULL", __func__);
-    return -1;
-  }
-
-  if (FALSE == bFwDnldFlag) {
-    totalBtyesToRead = NORMAL_MODE_HEADER_LEN;
-  } else {
-    totalBtyesToRead = FW_DNLD_HEADER_LEN;
-  }
-
-  /* Read with 2 second timeout, so that the read thread can be aborted
-     when the PN54X does not respond and we need to switch to FW download
-     mode. This should be done via a control socket instead. */
-  FD_ZERO(&rfds);
-  FD_SET((intptr_t)pDevHandle, &rfds);
-  tv.tv_sec = 2;
-  tv.tv_usec = 1;
-
-  ret_Select =
-      select((int)((intptr_t)pDevHandle + (int)1), &rfds, NULL, NULL, &tv);
-  if (ret_Select < 0) {
-    NXPLOG_TML_E("spi select() errno : %x", errno);
-    return -1;
-  } else if (ret_Select == 0) {
-    NXPLOG_TML_E("spi select() Timeout");
-    return -1;
-  } else {
-    wait4interrupt();
-    ret_Read =
-        SpiRead((intptr_t)pDevHandle, pBuffer, totalBtyesToRead - numRead);
-    if (ret_Read > 0) {
-      if (pBuffer[0] == 0xFF && pBuffer[1] == 0xFF) {
-        NXPLOG_TML_E("_spi_read() could be spurious interrupt");
-        return -1;
-      }
-      numRead += ret_Read;
-    } else if (ret_Read == 0) {
-      NXPLOG_TML_E("_spi_read() [hdr]EOF");
-      return -1;
-    } else {
-      NXPLOG_TML_E("_spi_read() [hdr] errno : %x", errno);
-      return -1;
+int NfccAltSpiTransport::Read(void* handle, uint8_t* buffer, int capacity) {
+  if (!handle || !buffer || capacity <= 0) { errno = EINVAL; return -1; }
+  const bool firmware = bFwDnldFlag;
+  const int header = firmware ? FW_DNLD_HEADER_LEN : NORMAL_MODE_HEADER_LEN;
+  if (capacity < header) { errno = EMSGSIZE; return -1; }
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+  const uint32_t generation=read_generation.load();
+  int received = 0;
+  auto read_exact = [&](int target) -> bool {
+    while (received < target) {
+      int remaining = (int)std::chrono::duration_cast<std::chrono::milliseconds>(deadline-std::chrono::steady_clock::now()).count();
+      if (remaining <= 0) { errno = ETIMEDOUT; return false; }
+      if (wait4interrupt(remaining, generation) < 0) return false;
+      ssize_t n = SpiRead((intptr_t)handle, buffer+received, target-received);
+      if (n > 0) received += n;
+      else if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+      else { if (!n) errno = EIO; return false; }
     }
-
-    if (FALSE == bFwDnldFlag) {
-      totalBtyesToRead = NORMAL_MODE_HEADER_LEN;
-    } else {
-      totalBtyesToRead = FW_DNLD_HEADER_LEN;
-    }
-
-    if (numRead < totalBtyesToRead) {
-      wait4interrupt();
-      ret_Read =
-          SpiRead((intptr_t)pDevHandle, pBuffer, totalBtyesToRead - numRead);
-      if (ret_Read != totalBtyesToRead - numRead) {
-        NXPLOG_TML_E("_spi_read() [hdr] errno : %x", errno);
-        return -1;
-      } else {
-        numRead += ret_Read;
-      }
-    }
-    if (TRUE == bFwDnldFlag) {
-      totalBtyesToRead =
-          pBuffer[FW_DNLD_LEN_OFFSET] + FW_DNLD_HEADER_LEN + CRC_LEN;
-    } else {
-      totalBtyesToRead =
-          pBuffer[NORMAL_MODE_LEN_OFFSET] + NORMAL_MODE_HEADER_LEN;
-    }
-    wait4interrupt();
-    ret_Read = SpiRead((intptr_t)pDevHandle, (pBuffer + numRead),
-                       totalBtyesToRead - numRead);
-    if (ret_Read > 0) {
-      numRead += ret_Read;
-    } else if (ret_Read == 0) {
-      NXPLOG_TML_E("_spi_read() [pyld] EOF");
-      return -1;
-    } else {
-      if (FALSE == bFwDnldFlag) {
-        NXPLOG_TML_E("_spi_read() [hdr] received");
-        phNxpNciHal_print_packet("RECV", pBuffer, NORMAL_MODE_HEADER_LEN);
-      }
-      NXPLOG_TML_E("_spi_read() [pyld] errno : %x", errno);
-      return -1;
-    }
-  }
-  NXPLOG_TML_D("%s exit", __func__);
-  return numRead;
+    return true;
+  };
+  if (!read_exact(header)) return -1;
+  if (buffer[0] == 0xFF && buffer[1] == 0xFF) { errno=EIO; return -1; }
+  const int total = header + buffer[firmware ? FW_DNLD_LEN_OFFSET : NORMAL_MODE_LEN_OFFSET] + (firmware ? CRC_LEN : 0);
+  if (total > capacity) { errno = EMSGSIZE; return -1; }
+  if (!read_exact(total)) return -1;
+  return received;
 }
 
 /*******************************************************************************
@@ -393,9 +330,10 @@ void NfccAltSpiTransport::Close(void* pDevHandle) {
   if (NULL != pDevHandle) {
     close((intptr_t)pDevHandle);
   }
-  if (iEnableFd) close(iEnableFd);
-  if (iInterruptFd) close(iInterruptFd);
-  if (iFwDnldFd) close(iFwDnldFd);
+  if (iEnableFd >= 0) close(iEnableFd);
+  if (iInterruptFd >= 0) close(iInterruptFd);
+  if (iFwDnldFd >= 0) close(iFwDnldFd);
+  iEnableFd = iInterruptFd = iFwDnldFd = -1;
   NXPLOG_TML_D("%s exit", __func__);
   return;
 }

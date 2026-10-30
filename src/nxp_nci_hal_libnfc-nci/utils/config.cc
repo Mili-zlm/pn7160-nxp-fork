@@ -1,3 +1,4 @@
+#include "pn7160_board_internal.h"
 /*
  * Copyright 2017 The Android Open Source Project
  *
@@ -15,6 +16,7 @@
  */
 #include "config.h"
 
+#include <climits>
 #include <android-base/file.h>
 #include <android-base/logging.h>
 #include <android-base/parseint.h>
@@ -30,7 +32,11 @@
 
 #include "phNxpLog.h"
 
-const char alternative_config_path[] = CONFIG_PATH;
+static const char *pn7160_alternative_config_path() {
+    const char *path = pn7160_board_config_directory();
+    if (path) return path;
+    return CONFIG_PATH;
+}
 const char transport_config_path[] = "/etc/";
 
 #define config_name             "libnfc-nci.conf"
@@ -552,9 +558,9 @@ CNfcConfig& CNfcConfig::GetInstance()
 
     if (theInstance.size() == 0 && theInstance.mValidFile)
     {
-        if (alternative_config_path[0] != '\0')
+        if (pn7160_alternative_config_path()[0] != '\0')
         {
-            strPath.assign(alternative_config_path);
+            strPath.assign(pn7160_alternative_config_path());
             strPath += cfg_name;
 #if (NFC_CFG_DEBUG == 0x01)
             /* Since the config file is loaded before reading the configuration,
@@ -564,7 +570,7 @@ CNfcConfig& CNfcConfig::GetInstance()
 #endif
             theInstance.readConfig(strPath.c_str(), true);
         }
-        if (theInstance.empty())
+        if (theInstance.empty() && pn7160_board_config_directory() == NULL)
         {
             strPath.assign(transport_config_path);
             strPath += cfg_name;
@@ -867,6 +873,11 @@ extern "C" int GetStrValue(const char* name, char* pValue, unsigned long l)
 
     switch (len)
     {
+#if UINT_MAX != ULONG_MAX
+    case sizeof(unsigned int):
+        *(static_cast<unsigned int*>(pValue)) = (unsigned int)v;
+        break;
+#endif
     case sizeof(unsigned long):
         *(static_cast<unsigned long*>(pValue)) = (unsigned long)v;
         break;

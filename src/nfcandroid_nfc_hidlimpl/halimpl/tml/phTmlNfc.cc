@@ -630,6 +630,7 @@ NFCSTATUS phTmlNfc_Shutdown(void) {
 
   /* Check whether TML is Initialized */
   if (NULL != gpphTmlNfc_Context) {
+    if (gpTransportObj) gpTransportObj->AbortRead();
     /* Reset thread variable to terminate the thread */
     gpphTmlNfc_Context->bThreadDone = 0;
     usleep(1000);
@@ -844,6 +845,8 @@ NFCSTATUS phTmlNfc_Read(uint8_t* pBuffer, uint16_t wLength,
 *******************************************************************************/
 NFCSTATUS phTmlNfc_ReadAbort(void) {
   NFCSTATUS wStatus = NFCSTATUS_INVALID_PARAMETER;
+  if (!gpphTmlNfc_Context) return NFCSTATUS_NOT_INITIALISED;
+  if (gpTransportObj) gpTransportObj->AbortRead();
   gpphTmlNfc_Context->tReadInfo.bEnable = 0;
 
   /*Reset the flag to accept another Read Request */

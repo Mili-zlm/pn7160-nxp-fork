@@ -21,13 +21,11 @@
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
 #include <poll.h>
+#include <atomic>
 
-#define I2C_ADDRESS 0x28
-#define I2C_BUS "/dev/i2c-1"
 #define SPI_BUS "/dev/spidev0.0"
-#define PIN_INT 23
-#define PIN_ENABLE 24
-#define PIN_FWDNLD 25
+
+#include "pn7160_board_internal.h"
 #define EDGE_NONE 0
 #define EDGE_RISING 1
 #define EDGE_FALLING 2
@@ -43,17 +41,20 @@ extern phTmlNfc_i2cfragmentation_t fragmentation_enabled;
 class NfccAltTransport : public NfccTransport {
  public:
   NfccAltTransport();
-  bool_t bFwDnldFlag = false;
+  std::atomic<bool> bFwDnldFlag{false};
   sem_t mTxRxSemaphore;
   int iEnableFd;
   int iInterruptFd;
   int iFwDnldFd;
 
  public:
-  void gpio_set_ven(int value);
-  void gpio_set_fwdl(int value);
+  int gpio_set_ven(int value);
+  int gpio_set_fwdl(int value);
   int verifyPin(int pin, int isoutput, int edge);
-  void wait4interrupt(void);
+  std::atomic<uint32_t> read_generation{0};
+  void AbortRead() override { read_generation.fetch_add(1); }
+  int wait4interrupt(int timeout_ms, uint32_t generation);
+  int wait4interrupt(int timeout_ms = 2000) { return wait4interrupt(timeout_ms, read_generation.load()); }
   int SemTimedWait();
   void SemPost();
   int Flushdata(void* pDevHandle, uint8_t* pBuffer, int numRead);

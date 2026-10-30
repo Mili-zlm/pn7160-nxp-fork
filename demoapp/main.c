@@ -20,6 +20,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "linux_nfc_api.h"
+#include "pn7160_board_config.h"
 #include "tools.h"
 typedef enum eDevState
 {
@@ -90,6 +91,8 @@ static T4T_NDEF_EMU_Callback_t *pT4T_NDEF_EMU_PushCb = NULL;
 void help(int mode);
 int InitEnv();
 int LookForTag(char** args, int args_len, char* tag, char** data, int format);
+void PrintNDEFContent(nfc_tag_info_t* TagInfo, ndef_info_t* NDEFinfo,
+                      unsigned char* ndefRaw, unsigned int ndefRawLen);
 /********************************** HCE **********************************/
 static void T4T_NDEF_EMU_FillRsp (unsigned char *pRsp, unsigned short offset, unsigned char length)
 {
@@ -604,7 +607,12 @@ int InitMode(int tag, int p2p, int hce)
     
     if(0x00 == res)
     {
-        res = doInitialize();
+        pn7160_config_t board_config;
+        res = pn7160_get_default_config(&board_config, sizeof(board_config));
+        if (res == PN7160_CONFIG_OK)
+            res = pn7160_set_config(&board_config);
+        if (res == PN7160_CONFIG_OK)
+            res = doInitialize();
         if(0x00 != res)
         {
             printf("NfcService Init Failed\n");

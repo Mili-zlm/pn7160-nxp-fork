@@ -1,3 +1,4 @@
+#include "pn7160_board_internal.h"
 /******************************************************************************
  *
  *  Copyright (C) 2011-2012 Broadcom Corporation
@@ -46,11 +47,15 @@
 
 #include <phNxpLog.h>
 
+static const char *pn7160_alternative_config_path() {
+    const char *path = pn7160_board_config_directory();
+    if (path) return path;
 #if GENERIC_TARGET
-const char alternative_config_path[] = "/data/nfc/";
+    return "/data/nfc/";
 #else
-const char alternative_config_path[] = CONFIG_PATH;
+    return CONFIG_PATH;
 #endif
+}
 
 const char transport_config_path[] = "/etc/";
 
@@ -516,16 +521,16 @@ CNxpNfcConfig& CNxpNfcConfig::GetInstance(unsigned long cfgtype)
     {
         int cfg_file_stat = -1;
 
-        if (alternative_config_path[0] != '\0')
+        if (pn7160_alternative_config_path()[0] != '\0')
         {
             struct stat st;
 
-            strPath.assign(alternative_config_path);
+            strPath.assign(pn7160_alternative_config_path());
             strPath += cfg_name;
             cfg_file_stat = stat(strPath.c_str(), &st);
         }
 
-        if( cfg_file_stat == -1 )
+        if( cfg_file_stat == -1 && pn7160_board_config_directory() == NULL )
         {
             strPath.assign(transport_config_path);
             strPath += cfg_name;
@@ -1075,8 +1080,8 @@ void readOptionalConfig(const char* extra)
 {
     string strPath;
     strPath.assign(transport_config_path);
-    if (alternative_config_path[0] != '\0')
-        strPath.assign(alternative_config_path);
+    if (pn7160_alternative_config_path()[0] != '\0')
+        strPath.assign(pn7160_alternative_config_path());
 
     strPath += extra_config_base;
     strPath += extra;

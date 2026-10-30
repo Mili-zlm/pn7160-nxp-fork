@@ -2779,3 +2779,5 @@ static void sReconnectTimerProc (union sigval)
 }
 
 #endif
+
+extern "C" int safe_nfc_portable_runtime_build(void) { return 1; }

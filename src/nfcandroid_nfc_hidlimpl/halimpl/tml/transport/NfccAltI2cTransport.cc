@@ -15,6 +15,9 @@
  *
  ******************************************************************************/
 
+#include <mutex>
+#include <chrono>
+#include "pn7160_diag.h"
 #include <errno.h>
 #include <fcntl.h>
 #ifdef ANDROID
@@ -33,6 +36,46 @@
 #include "phNxpNciHal_utils.h"
 
 extern phTmlNfc_Context_t* gpphTmlNfc_Context;
+
+#ifndef PN7160_ENABLE_DIAG
+#define PN7160_ENABLE_DIAG 1
+#endif
+namespace {
+std::mutex trace_mutex;
+uint64_t trace_entries[256] = {};
+uint32_t trace_next = 0;
+uint32_t trace_used = 0;
+}
+static void pn7160_record_nci(uint8_t direction, const uint8_t* data, int length) {
+  static const bool enabled = []() {
+    const char *value = getenv("PN7160_DIAG_NCI_TRACE");
+    return PN7160_ENABLE_DIAG && value && strcmp(value, "1") == 0;
+  }();
+  if (!enabled || !data || length <= 0) return;
+  uint64_t entry = direction | ((uint64_t)(length > 255 ? 255 : length) << 8);
+  for (int i = 0; i < length && i < 6; ++i) entry |= (uint64_t)data[i] << (16 + 8*i);
+  std::lock_guard<std::mutex> lock(trace_mutex);
+  trace_entries[trace_next % 256] = entry;
+  ++trace_next;
+  if (trace_used < 256) ++trace_used;
+}
+extern "C" int pn7160_diag_available(void) { return PN7160_ENABLE_DIAG; }
+extern "C" uint32_t safe_nfc_nci_trace_count(void) {
+  std::lock_guard<std::mutex> lock(trace_mutex); return trace_next;
+}
+extern "C" uint64_t safe_nfc_nci_trace_entry(uint32_t index) {
+  std::lock_guard<std::mutex> lock(trace_mutex);
+  uint32_t age = trace_next - index;
+  return age && age <= trace_used ? trace_entries[index % 256] : 0;
+}
+extern "C" uint32_t pn7160_nci_trace_snapshot(uint64_t *out, uint32_t capacity, uint32_t *first) {
+  if (!out || !first || !capacity) return 0;
+  std::lock_guard<std::mutex> lock(trace_mutex);
+  uint32_t count = capacity < trace_used ? capacity : trace_used;
+  *first = trace_next - count;
+  for (uint32_t i=0; i<count; ++i) out[i] = trace_entries[(*first+i)%256];
+  return count;
+}
 
 /*******************************************************************************
 **
@@ -57,24 +100,33 @@ NFCSTATUS NfccAltI2cTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   int Fd = -1;
   // Assign IO pins
   status_value = ConfigurePin();
-  if(status_value == -1)
+  if(status_value != NFCSTATUS_SUCCESS)
     return NFCSTATUS_INVALID_DEVICE;
-  NXPLOG_TML_D("NFCHW - open I2C bus - %s\n", I2C_BUS);
+  const char* i2c_bus = pn7160_board_i2c_bus();
+  const uint32_t i2c_address = pn7160_board_i2c_address();
+  NXPLOG_TML_D("NFCHW - open I2C bus - %s\n", i2c_bus);
 
   // I2C bus
-  Fd = open(I2C_BUS, O_RDWR | O_NOCTTY);
+  Fd = open(i2c_bus, O_RDWR | O_NOCTTY);
   if (Fd < 0) {
-    NXPLOG_TML_E("Could not open I2C bus '%s' (%s)", I2C_BUS, strerror(errno));
+    NXPLOG_TML_E("Could not open I2C bus '%s' (%s)", i2c_bus, strerror(errno));
     Close(NULL);
     return (NFCSTATUS_INVALID_DEVICE);
   }
+  if (Fd == 0) {
+    const int replacement = fcntl(Fd, F_DUPFD_CLOEXEC, 3);
+    close(Fd);
+    Fd = replacement;
+    if (Fd < 0) { Close(NULL); return NFCSTATUS_INVALID_DEVICE; }
+  }
   *pLinkHandle = (void*)((intptr_t)Fd);
-  NXPLOG_TML_D("NFC - open I2C device - 0x%02x\n", I2C_ADDRESS);
+  NXPLOG_TML_D("NFC - open I2C device - 0x%02x\n", i2c_address);
 
   // I2C slave address
-  if (ioctl(Fd, I2C_SLAVE, I2C_ADDRESS) < 0) {
+  if (ioctl(Fd, I2C_SLAVE, i2c_address) < 0) {
     NXPLOG_TML_E("Cannot select I2C address (%s)\n", strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
 
@@ -100,101 +152,32 @@ NFCSTATUS NfccAltI2cTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
 **                  -1        - read operation failure
 **
 *******************************************************************************/
-int NfccAltI2cTransport::Read(void* pDevHandle, uint8_t* pBuffer,
-                              int nNbBytesToRead) {
-  NXPLOG_TML_D("%s Enter", __func__);
-  int ret_Read;
-  int numRead = 0;
-  uint16_t totalBtyesToRead = 0;
-
-  int ret_Select;
-  struct timeval tv;
-  fd_set rfds;
-
-  UNUSED(nNbBytesToRead);
-  if (NULL == pDevHandle) {
-    NXPLOG_TML_E("%s devive handle is NULL", __func__);
-    return -1;
-  }
-
-  if (FALSE == bFwDnldFlag) {
-    totalBtyesToRead = NORMAL_MODE_HEADER_LEN;
-  } else {
-    totalBtyesToRead = FW_DNLD_HEADER_LEN;
-  }
-
-  /* Read with 2 second timeout, so that the read thread can be aborted
-     when the PN54X does not respond and we need to switch to FW download
-     mode. This should be done via a control socket instead. */
-  FD_ZERO(&rfds);
-  FD_SET((intptr_t)pDevHandle, &rfds);
-  tv.tv_sec = 2;
-  tv.tv_usec = 1;
-
-  ret_Select =
-      select((int)((intptr_t)pDevHandle + (int)1), &rfds, NULL, NULL, &tv);
-  if (ret_Select < 0) {
-    NXPLOG_TML_E("i2c select() errno : %x", errno);
-    return -1;
-  } else if (ret_Select == 0) {
-    NXPLOG_TML_E("i2c select() Timeout");
-    return -1;
-  } else {
-    wait4interrupt();
-    ret_Read = read((intptr_t)pDevHandle, pBuffer, totalBtyesToRead - numRead);
-    if (ret_Read > 0) {
-      numRead += ret_Read;
-    } else if (ret_Read == 0) {
-      NXPLOG_TML_E("_i2c_read() [hdr]EOF");
-      return -1;
-    } else {
-      NXPLOG_TML_E("_i2c_read() [hdr] errno : %x", errno);
-      return -1;
+int NfccAltI2cTransport::Read(void* handle, uint8_t* buffer, int capacity) {
+  if (!handle || !buffer || capacity <= 0) { errno = EINVAL; return -1; }
+  const bool firmware = bFwDnldFlag;
+  const int header = firmware ? FW_DNLD_HEADER_LEN : NORMAL_MODE_HEADER_LEN;
+  if (capacity < header) { errno = EMSGSIZE; return -1; }
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(2);
+  const uint32_t generation=read_generation.load();
+  int received = 0;
+  auto read_exact = [&](int target) -> bool {
+    while (received < target) {
+      int remaining = (int)std::chrono::duration_cast<std::chrono::milliseconds>(deadline-std::chrono::steady_clock::now()).count();
+      if (remaining <= 0) { errno = ETIMEDOUT; return false; }
+      if (wait4interrupt(remaining, generation) < 0) return false;
+      ssize_t n = read((intptr_t)handle, buffer+received, target-received);
+      if (n > 0) received += n;
+      else if (n < 0 && (errno == EINTR || errno == EAGAIN)) continue;
+      else { if (!n) errno = EIO; return false; }
     }
-
-    if (FALSE == bFwDnldFlag) {
-      totalBtyesToRead = NORMAL_MODE_HEADER_LEN;
-    } else {
-      totalBtyesToRead = FW_DNLD_HEADER_LEN;
-    }
-
-    if (numRead < totalBtyesToRead) {
-      wait4interrupt();
-      ret_Read =
-          read((intptr_t)pDevHandle, pBuffer, totalBtyesToRead - numRead);
-      if (ret_Read != totalBtyesToRead - numRead) {
-        NXPLOG_TML_E("_i2c_read() [hdr] errno : %x", errno);
-        return -1;
-      } else {
-        numRead += ret_Read;
-      }
-    }
-    if (TRUE == bFwDnldFlag) {
-      totalBtyesToRead =
-          pBuffer[FW_DNLD_LEN_OFFSET] + FW_DNLD_HEADER_LEN + CRC_LEN;
-    } else {
-      totalBtyesToRead =
-          pBuffer[NORMAL_MODE_LEN_OFFSET] + NORMAL_MODE_HEADER_LEN;
-    }
-    wait4interrupt();
-    ret_Read = read((intptr_t)pDevHandle, (pBuffer + numRead),
-                    totalBtyesToRead - numRead);
-    if (ret_Read > 0) {
-      numRead += ret_Read;
-    } else if (ret_Read == 0) {
-      NXPLOG_TML_E("_i2c_read() [pyld] EOF");
-      return -1;
-    } else {
-      if (FALSE == bFwDnldFlag) {
-        NXPLOG_TML_E("_i2c_read() [hdr] received");
-        phNxpNciHal_print_packet("RECV", pBuffer, NORMAL_MODE_HEADER_LEN);
-      }
-      NXPLOG_TML_E("_i2c_read() [pyld] errno : %x", errno);
-      return -1;
-    }
-  }
-  NXPLOG_TML_D("%s exit", __func__);
-  return numRead;
+    return true;
+  };
+  if (!read_exact(header)) return -1;
+  const int total = header + buffer[firmware ? FW_DNLD_LEN_OFFSET : NORMAL_MODE_LEN_OFFSET] + (firmware ? CRC_LEN : 0);
+  if (total > capacity) { errno = EMSGSIZE; return -1; }
+  if (!read_exact(total)) return -1;
+  pn7160_record_nci(1, buffer, received);
+  return received;
 }
 
 /*******************************************************************************
@@ -252,9 +235,11 @@ int NfccAltI2cTransport::Write(void* pDevHandle, uint8_t* pBuffer,
       if (errno == EINTR || errno == EAGAIN) {
         continue;
       }
+      pn7160_record_nci(3, pBuffer, nNbBytesToWrite);
       return -1;
     }
   }
+  pn7160_record_nci(2, pBuffer, numWrote);
   NXPLOG_TML_D("%s exit", __func__);
   return numWrote;
 }
@@ -275,9 +260,10 @@ void NfccAltI2cTransport::Close(void* pDevHandle) {
   if (NULL != pDevHandle) {
     close((intptr_t)pDevHandle);
   }
-  if (iEnableFd) close(iEnableFd);
-  if (iInterruptFd) close(iInterruptFd);
-  if (iFwDnldFd) close(iFwDnldFd);
+  if (iEnableFd >= 0) close(iEnableFd);
+  if (iInterruptFd >= 0) close(iInterruptFd);
+  if (iFwDnldFd >= 0) close(iFwDnldFd);
+  iEnableFd = iInterruptFd = iFwDnldFd = -1;
   NXPLOG_TML_D("%s exit", __func__);
   return;
 }

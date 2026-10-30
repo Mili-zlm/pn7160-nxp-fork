@@ -230,6 +230,7 @@ public:
    **                  In the case of IOCTL error, it returns -ve value.
    **
    *******************************************************************************/
+  virtual void AbortRead() {}
   virtual int GetIrqState(void *pDevHandle);
 
   /*****************************************************************************

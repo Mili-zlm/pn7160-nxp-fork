@@ -1,3 +1,4 @@
+#include "pn7160_board_internal.h"
 /******************************************************************************
  *
  *  Copyright 2015-2021,2022 NXP
@@ -184,7 +185,13 @@ int nfcTag_transceive (unsigned int handle, unsigned char *tx_buffer, int tx_buf
 int doInitialize ()
 {
     int ret;
+    const int config_status = pn7160_board_begin();
+    if (config_status != PN7160_CONFIG_OK) {
+        NXPLOG_API_E("Board initialization refused: %d (busy=-2, missing=-4)", config_status);
+        return NFA_STATUS_FAILED;
+    }
     bool status = nfcManager_doInitialize();
+    if (!status) pn7160_board_end();
     ret = (status)?NFA_STATUS_OK:NFA_STATUS_FAILED;
     return ret;
 }
@@ -193,6 +200,7 @@ int doDeinitialize ()
 {
     int ret;
     ret = nfcManager_doDeinitialize();
+    if (ret == 0) pn7160_board_end();
     return ret;
 }
 
@@ -379,7 +387,7 @@ int doWriteT4tData(unsigned char *command, unsigned char *ndef_buffer, int ndef_
 int doReadT4tData(unsigned char *command, unsigned char *ndef_buffer, int *ndef_buffer_length)
 {
     int ret = 0;
-    if (ndef_buffer == NULL || ndef_buffer_length <= 0) {
+    if (ndef_buffer == NULL || ndef_buffer_length == NULL || *ndef_buffer_length <= 0) {
       NXPLOG_API_E ("%s: invalide buffer!", __FUNCTION__);
       return NFA_STATUS_FAILED;
     }

@@ -1,3 +1,4 @@
+#include <chrono>
 /******************************************************************************
  *  Copyright 2021 NXP
  *
@@ -42,8 +43,7 @@ extern phTmlNfc_i2cfragmentation_t fragmentation_enabled;
 extern phTmlNfc_Context_t* gpphTmlNfc_Context;
 
 NfccAltTransport::NfccAltTransport() {
-  iEnableFd = 0;
-  iInterruptFd = 0;
+  iEnableFd = iInterruptFd = iFwDnldFd = -1;
 }
 
 /*******************************************************************************
@@ -98,7 +98,7 @@ int NfccAltTransport::Flushdata(void* pDevHandle, uint8_t* pBuffer,
 **
 *******************************************************************************/
 int NfccAltTransport::NfccReset(void* pDevHandle, NfccResetType eType) {
-  int ret = -1;
+  int ret = 0;
   NXPLOG_TML_D("%s, VEN eType %ld", __func__, eType);
 
   if (NULL == pDevHandle) {
@@ -106,27 +106,27 @@ int NfccAltTransport::NfccReset(void* pDevHandle, NfccResetType eType) {
   }
   switch (eType) {
     case MODE_POWER_OFF:
-      gpio_set_fwdl(0);
-      gpio_set_ven(0);
+      if (gpio_set_fwdl(0) < 0) return -1;
+      if (gpio_set_ven(0) < 0) return -1;
       break;
     case MODE_POWER_ON:
-      gpio_set_fwdl(0);
-      gpio_set_ven(1);
+      if (gpio_set_fwdl(0) < 0) return -1;
+      if (gpio_set_ven(1) < 0) return -1;
       break;
     case MODE_FW_DWNLD_WITH_VEN:
-      gpio_set_fwdl(1);
-      gpio_set_ven(0);
-      gpio_set_ven(1);
+      if (gpio_set_fwdl(1) < 0) return -1;
+      if (gpio_set_ven(0) < 0) return -1;
+      if (gpio_set_ven(1) < 0) return -1;
       break;
     case MODE_FW_DWND_HIGH:
-      gpio_set_fwdl(1);
+      if (gpio_set_fwdl(1) < 0) return -1;
       break;
     case MODE_POWER_RESET:
-      gpio_set_ven(0);
-      gpio_set_ven(1);
+      if (gpio_set_ven(0) < 0) return -1;
+      if (gpio_set_ven(1) < 0) return -1;
       break;
     case MODE_FW_GPIO_LOW:
-      gpio_set_fwdl(0);
+      if (gpio_set_fwdl(0) < 0) return -1;
       break;
     default:
       NXPLOG_TML_E("%s, VEN eType %ld", __func__, eType);
@@ -254,20 +254,20 @@ int NfccAltTransport::GetIrqState(void* pDevHandle) {
   int len;
   char buf[2];
 
-  if (iInterruptFd <= 0) {
+  if (iInterruptFd < 0) {
     NXPLOG_TML_E("Error with interrupt-detect pin (%d)", iInterruptFd);
     return (-1);
   }
 
   // Seek to the start of the file
-  lseek(iInterruptFd, SEEK_SET, 0);
+  if (lseek(iInterruptFd, 0, SEEK_SET) < 0) return -1;
 
   // Read the field_detect line
   len = read(iInterruptFd, buf, 2);
 
   if (len != 2) {
     NXPLOG_TML_E("Error with interrupt-detect pin (%s)", strerror(errno));
-    return (0);
+    errno=EIO; return (-1);
   }
 
   NXPLOG_TML_D("%s exit: state = %d", __func__, (buf[0] != '0'));
@@ -282,10 +282,10 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
   sprintf(buf, "/sys/class/gpio/gpio%d", pin);
   NXPLOG_TML_D("Pin %s\n", buf);
   int fd = open(buf, O_RDONLY);
-  if (fd <= 0) {
+  if (fd < 0) {
     // Pin not exported yet
     NXPLOG_TML_D("Create pin %s\n", buf);
-    if ((fd = open("/sys/class/gpio/export", O_WRONLY)) > 0) {
+    if ((fd = open("/sys/class/gpio/export", O_WRONLY)) >= 0) {
       sprintf(buf, "%d", pin);
       if (write(fd, buf, strlen(buf)) == strlen(buf)) {
         hasGpio = 1;
@@ -306,13 +306,14 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
     sprintf(buf, "/sys/class/gpio/gpio%d/direction", pin);
     NXPLOG_TML_D("Direction %s\n", buf);
     fd = open(buf, O_WRONLY);
-    if (fd <= 0) {
+    if (fd < 0) {
       NXPLOG_TML_E("Could not open direction port '%s' (%s)", buf,
                    strerror(errno));
       return -1;
     } else {
       if (isoutput) {
-        if (write(fd, "out", 3) == 3) {
+        if (write(fd, "out", 3) != 3) { int saved=errno; close(fd); errno=saved?saved:EIO; return -1; }
+          {
           NXPLOG_TML_D("Pin %d now an output\n", pin);
         }
         close(fd);
@@ -320,25 +321,20 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
         // Open pin and make sure it is off
         sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
         fd = open(buf, O_RDWR);
-        if (fd <= 0) {
-        }
-        close(fd);
-
-        // Open pin and make sure it is off
-        sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
-        fd = open(buf, O_RDWR);
-        if (fd <= 0) {
+        if (fd < 0) {
           NXPLOG_TML_E("Could not open value port '%s' (%s)", buf,
                        strerror(errno));
           return -1;
         } else {
-          if (write(fd, "0", 1) == 1) {
+          if (write(fd, "0", 1) != 1) { int saved=errno; close(fd); errno=saved?saved:EIO; return -1; }
+          {
             NXPLOG_TML_D("Pin %d now off\n", pin);
           }
           return (fd);  // Success
         }
       } else {
-        if (write(fd, "in", 2) == 2) {
+        if (write(fd, "in", 2) != 2) { int saved=errno; close(fd); errno=saved?saved:EIO; return -1; }
+          {
           NXPLOG_TML_D("Pin %d now an input\n", pin);
         }
         close(fd);
@@ -348,7 +344,7 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
           sprintf(buf, "/sys/class/gpio/gpio%d/edge", pin);
           NXPLOG_TML_D("Edge %s\n", buf);
           fd = open(buf, O_RDWR);
-          if (fd <= 0) {
+          if (fd < 0) {
             NXPLOG_TML_E("Could not open edge port '%s' (%s)", buf,
                          strerror(errno));
             return -1;
@@ -367,7 +363,8 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
             }
             int l = strlen(edge_str);
             NXPLOG_TML_D("Edge-string %s - %d\n", edge_str, l);
-            if (write(fd, edge_str, l) == l) {
+            if (write(fd, edge_str, l) != l) { int saved=errno; close(fd); errno=saved?saved:EIO; return -1; }
+          {
               NXPLOG_TML_D("Pin %d trigger on %s\n", pin, edge_str);
             }
             close(fd);
@@ -378,7 +375,7 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
         sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
         NXPLOG_TML_D("Value %s\n", buf);
         fd = open(buf, O_RDONLY);
-        if (fd <= 0) {
+        if (fd < 0) {
           NXPLOG_TML_E("Could not open value port '%s' (%s)", buf,
                        strerror(errno));
           return -1;
@@ -388,44 +385,33 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
       }
     }
   }
-  return (0);
+  return (-1);
 }
-void NfccAltTransport::gpio_set_ven(int value) {
-  if (iEnableFd > 0) {
-    if (value == 0) {
-      write(iEnableFd, "0", 1);
-    } else {
-      write(iEnableFd, "1", 1);
-    }
-    usleep(10 * 1000);
-  }
+int NfccAltTransport::gpio_set_ven(int value) {
+  if (iEnableFd < 0) { errno=EBADF; return -1; }
+  if (write(iEnableFd, value ? "1" : "0", 1) != 1) return -1;
+  pn7160_board_reset_wait(); return 0;
 }
-
-void NfccAltTransport::gpio_set_fwdl(int value) {
-  if (iFwDnldFd > 0) {
-    if (value == 0) {
-      write(iFwDnldFd, "0", 1);
-    } else {
-      write(iFwDnldFd, "1", 1);
-    }
-    usleep(10 * 1000);
-  }
+int NfccAltTransport::gpio_set_fwdl(int value) {
+  if (iFwDnldFd < 0) { if (!value) return 0; errno=ENOTSUP; return -1; }
+  if (write(iFwDnldFd, value ? "1" : "0", 1) != 1) return -1;
+  pn7160_board_reset_wait(); return 0;
 }
-
-void NfccAltTransport::wait4interrupt(void) {
-  /* Open STREAMS device. */
-  struct pollfd fds[1];
-  fds[0].fd = iInterruptFd;
-  fds[0].events = POLLPRI;
-  int timeout_msecs = -1;  // 100000;
-  int ret;
-  // usleep(500000);
-  while (!GetIrqState(NULL)) {
-    // Wait for an edge on the GPIO pin to get woken up
-    ret = poll(fds, 1, timeout_msecs);
-    if (ret != 1) {
-      NXPLOG_TML_D("wait4interrupt() %d - %s, ", ret, strerror(errno));
-    }
+int NfccAltTransport::wait4interrupt(int timeout_ms, uint32_t generation) {
+  auto deadline=std::chrono::steady_clock::now()+std::chrono::milliseconds(timeout_ms);
+  while (true) {
+    if (read_generation.load() != generation) { errno=ECANCELED; return -1; }
+    int state=GetIrqState(NULL);
+    if (state < 0) return -1;
+    if (state > 0) return 0;
+    int remaining=(int)std::chrono::duration_cast<std::chrono::milliseconds>(deadline-std::chrono::steady_clock::now()).count();
+    if (remaining <= 0) { errno=ETIMEDOUT; return -1; }
+    struct pollfd fd={iInterruptFd, POLLPRI, 0};
+    int result=poll(&fd,1,remaining < 50 ? remaining : 50);
+    if (result < 0 && errno==EINTR) continue;
+    if (result < 0) return -1;
+    if (!result) continue;
+    if ((fd.revents & (POLLHUP|POLLNVAL)) || ((fd.revents & POLLERR) && !(fd.revents & POLLPRI))) { errno=EIO; return -1; }
   }
 }
 
@@ -442,11 +428,20 @@ void NfccAltTransport::wait4interrupt(void) {
 int NfccAltTransport::ConfigurePin()
 {
   // Assign IO pins
-  iInterruptFd = verifyPin(PIN_INT, 0, EDGE_RISING);
-  if (iInterruptFd < 0) return (NFCSTATUS_INVALID_DEVICE);
-  iEnableFd = verifyPin(PIN_ENABLE, 1, EDGE_NONE);
-  if (iEnableFd < 0) return (NFCSTATUS_INVALID_DEVICE);
-  iFwDnldFd = verifyPin(PIN_FWDNLD, 1, EDGE_NONE);
-  if (iFwDnldFd < 0) return (NFCSTATUS_INVALID_DEVICE);
+  if (!pn7160_board_configured()) return NFCSTATUS_INVALID_DEVICE;
+  const int irq = pn7160_board_irq(), ven = pn7160_board_ven(), dwl = pn7160_board_dwl();
+  iInterruptFd = verifyPin(irq, 0, EDGE_RISING);
+  if (iInterruptFd < 0) return NFCSTATUS_INVALID_DEVICE;
+  iEnableFd = verifyPin(ven, 1, EDGE_NONE);
+  if (iEnableFd < 0) {
+    close(iInterruptFd); iInterruptFd = -1;
+    return NFCSTATUS_INVALID_DEVICE;
+  }
+  iFwDnldFd = dwl < 0 ? -1 : verifyPin(dwl, 1, EDGE_NONE);
+  if (dwl >= 0 && iFwDnldFd < 0) {
+    close(iInterruptFd); close(iEnableFd);
+    iInterruptFd = iEnableFd = -1;
+    return NFCSTATUS_INVALID_DEVICE;
+  }
   return NFCSTATUS_SUCCESS;
 }
