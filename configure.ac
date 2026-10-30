@@ -3,6 +3,8 @@
 
 AC_PREREQ([2.69])
 AC_INIT([libnfc_nci_linux], [1.0])
+# Retained upstream metadata only. Prevent bypassing the retired bootstrap.
+AC_MSG_ERROR([Autotools is no longer supported; use cmake -S . -B build/cmake])
 AM_INIT_AUTOMAKE([foreign subdir-objects color-tests])
 AC_CONFIG_HEADERS([config1.h])
 

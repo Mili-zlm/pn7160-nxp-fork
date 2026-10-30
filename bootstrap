@@ -1,9 +1,10 @@
 #!/bin/sh
-
-mkdir -p m4
-aclocal
-autoheader
-libtoolize
-automake --add-missing
-autoreconf -fi
-rm -Rf autom4te.cache
+# Historical Autotools entry retired; native CMake is the supported build.
+cat >&2 <<'MESSAGE'
+Autotools is no longer supported by this PN7160 fork.
+Use the native CMake build instead:
+  cmake -S . -B build/cmake -DCMAKE_BUILD_TYPE=Release
+  cmake --build build/cmake --parallel
+  cmake --install build/cmake
+MESSAGE
+exit 1

@@ -15,6 +15,7 @@
  *
  ******************************************************************************/
 
+#include <atomic>
 #include <errno.h>
 #include <fcntl.h>
 #ifdef ANDROID
@@ -33,6 +34,31 @@
 #include "phNxpNciHal_utils.h"
 
 extern phTmlNfc_Context_t* gpphTmlNfc_Context;
+
+static std::atomic<uint64_t> pn7160_nci_trace[256] = {};
+static std::atomic<uint32_t> pn7160_nci_trace_next(0);
+
+// One entry stores direction, transfer length, and at most six header bytes.
+static void pn7160_record_nci(uint8_t direction, const uint8_t* data, int length) {
+  static const bool enabled = []() {
+    const char* value = getenv("PN7160_DIAG_NCI_TRACE");
+    return value && value[0] == '1' && value[1] == '\0';
+  }();
+  if (!enabled || !data || length <= 0) return;
+  uint64_t entry = direction | ((uint64_t)(length > 255 ? 255 : length) << 8);
+  for (int i = 0; i < length && i < 6; ++i)
+    entry |= (uint64_t)data[i] << (16 + 8 * i);
+  const uint32_t index = pn7160_nci_trace_next.fetch_add(1, std::memory_order_relaxed);
+  pn7160_nci_trace[index % 256].store(entry, std::memory_order_release);
+}
+
+extern "C" uint32_t safe_nfc_nci_trace_count(void) {
+  return pn7160_nci_trace_next.load(std::memory_order_acquire);
+}
+
+extern "C" uint64_t safe_nfc_nci_trace_entry(uint32_t index) {
+  return pn7160_nci_trace[index % 256].load(std::memory_order_acquire);
+}
 
 /*******************************************************************************
 **
@@ -57,24 +83,33 @@ NFCSTATUS NfccAltI2cTransport::OpenAndConfigure(pphTmlNfc_Config_t pConfig,
   int Fd = -1;
   // Assign IO pins
   status_value = ConfigurePin();
-  if(status_value == -1)
+  if(status_value != NFCSTATUS_SUCCESS)
     return NFCSTATUS_INVALID_DEVICE;
-  NXPLOG_TML_D("NFCHW - open I2C bus - %s\n", I2C_BUS);
+  const char* i2c_bus = pn7160_board_i2c_bus();
+  const uint32_t i2c_address = pn7160_board_i2c_address();
+  NXPLOG_TML_D("NFCHW - open I2C bus - %s\n", i2c_bus);
 
   // I2C bus
-  Fd = open(I2C_BUS, O_RDWR | O_NOCTTY);
+  Fd = open(i2c_bus, O_RDWR | O_NOCTTY);
   if (Fd < 0) {
-    NXPLOG_TML_E("Could not open I2C bus '%s' (%s)", I2C_BUS, strerror(errno));
+    NXPLOG_TML_E("Could not open I2C bus '%s' (%s)", i2c_bus, strerror(errno));
     Close(NULL);
     return (NFCSTATUS_INVALID_DEVICE);
   }
+  if (Fd == 0) {
+    const int replacement = fcntl(Fd, F_DUPFD_CLOEXEC, 3);
+    close(Fd);
+    Fd = replacement;
+    if (Fd < 0) { Close(NULL); return NFCSTATUS_INVALID_DEVICE; }
+  }
   *pLinkHandle = (void*)((intptr_t)Fd);
-  NXPLOG_TML_D("NFC - open I2C device - 0x%02x\n", I2C_ADDRESS);
+  NXPLOG_TML_D("NFC - open I2C device - 0x%02x\n", i2c_address);
 
   // I2C slave address
-  if (ioctl(Fd, I2C_SLAVE, I2C_ADDRESS) < 0) {
+  if (ioctl(Fd, I2C_SLAVE, i2c_address) < 0) {
     NXPLOG_TML_E("Cannot select I2C address (%s)\n", strerror(errno));
-    Close(pLinkHandle);
+    Close((void*)((intptr_t)Fd));
+    *pLinkHandle = NULL;
     return (NFCSTATUS_INVALID_DEVICE);
   }
 
@@ -193,6 +228,7 @@ int NfccAltI2cTransport::Read(void* pDevHandle, uint8_t* pBuffer,
       return -1;
     }
   }
+  pn7160_record_nci(1, pBuffer, numRead);
   NXPLOG_TML_D("%s exit", __func__);
   return numRead;
 }
@@ -252,9 +288,11 @@ int NfccAltI2cTransport::Write(void* pDevHandle, uint8_t* pBuffer,
       if (errno == EINTR || errno == EAGAIN) {
         continue;
       }
+      pn7160_record_nci(3, pBuffer, nNbBytesToWrite);
       return -1;
     }
   }
+  pn7160_record_nci(2, pBuffer, numWrote);
   NXPLOG_TML_D("%s exit", __func__);
   return numWrote;
 }
@@ -275,9 +313,10 @@ void NfccAltI2cTransport::Close(void* pDevHandle) {
   if (NULL != pDevHandle) {
     close((intptr_t)pDevHandle);
   }
-  if (iEnableFd) close(iEnableFd);
-  if (iInterruptFd) close(iInterruptFd);
-  if (iFwDnldFd) close(iFwDnldFd);
+  if (iEnableFd >= 0) close(iEnableFd);
+  if (iInterruptFd >= 0) close(iInterruptFd);
+  if (iFwDnldFd >= 0) close(iFwDnldFd);
+  iEnableFd = iInterruptFd = iFwDnldFd = -1;
   NXPLOG_TML_D("%s exit", __func__);
   return;
 }

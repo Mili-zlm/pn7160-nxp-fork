@@ -42,8 +42,7 @@ extern phTmlNfc_i2cfragmentation_t fragmentation_enabled;
 extern phTmlNfc_Context_t* gpphTmlNfc_Context;
 
 NfccAltTransport::NfccAltTransport() {
-  iEnableFd = 0;
-  iInterruptFd = 0;
+  iEnableFd = iInterruptFd = iFwDnldFd = -1;
 }
 
 /*******************************************************************************
@@ -282,10 +281,10 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
   sprintf(buf, "/sys/class/gpio/gpio%d", pin);
   NXPLOG_TML_D("Pin %s\n", buf);
   int fd = open(buf, O_RDONLY);
-  if (fd <= 0) {
+  if (fd < 0) {
     // Pin not exported yet
     NXPLOG_TML_D("Create pin %s\n", buf);
-    if ((fd = open("/sys/class/gpio/export", O_WRONLY)) > 0) {
+    if ((fd = open("/sys/class/gpio/export", O_WRONLY)) >= 0) {
       sprintf(buf, "%d", pin);
       if (write(fd, buf, strlen(buf)) == strlen(buf)) {
         hasGpio = 1;
@@ -306,7 +305,7 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
     sprintf(buf, "/sys/class/gpio/gpio%d/direction", pin);
     NXPLOG_TML_D("Direction %s\n", buf);
     fd = open(buf, O_WRONLY);
-    if (fd <= 0) {
+    if (fd < 0) {
       NXPLOG_TML_E("Could not open direction port '%s' (%s)", buf,
                    strerror(errno));
       return -1;
@@ -320,14 +319,14 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
         // Open pin and make sure it is off
         sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
         fd = open(buf, O_RDWR);
-        if (fd <= 0) {
+        if (fd < 0) {
         }
         close(fd);
 
         // Open pin and make sure it is off
         sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
         fd = open(buf, O_RDWR);
-        if (fd <= 0) {
+        if (fd < 0) {
           NXPLOG_TML_E("Could not open value port '%s' (%s)", buf,
                        strerror(errno));
           return -1;
@@ -348,7 +347,7 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
           sprintf(buf, "/sys/class/gpio/gpio%d/edge", pin);
           NXPLOG_TML_D("Edge %s\n", buf);
           fd = open(buf, O_RDWR);
-          if (fd <= 0) {
+          if (fd < 0) {
             NXPLOG_TML_E("Could not open edge port '%s' (%s)", buf,
                          strerror(errno));
             return -1;
@@ -378,7 +377,7 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
         sprintf(buf, "/sys/class/gpio/gpio%d/value", pin);
         NXPLOG_TML_D("Value %s\n", buf);
         fd = open(buf, O_RDONLY);
-        if (fd <= 0) {
+        if (fd < 0) {
           NXPLOG_TML_E("Could not open value port '%s' (%s)", buf,
                        strerror(errno));
           return -1;
@@ -388,27 +387,27 @@ int NfccAltTransport::verifyPin(int pin, int isoutput, int edge) {
       }
     }
   }
-  return (0);
+  return (-1);
 }
 void NfccAltTransport::gpio_set_ven(int value) {
-  if (iEnableFd > 0) {
+  if (iEnableFd >= 0) {
     if (value == 0) {
       write(iEnableFd, "0", 1);
     } else {
       write(iEnableFd, "1", 1);
     }
-    usleep(10 * 1000);
+    pn7160_board_reset_wait();
   }
 }
 
 void NfccAltTransport::gpio_set_fwdl(int value) {
-  if (iFwDnldFd > 0) {
+  if (iFwDnldFd >= 0) {
     if (value == 0) {
       write(iFwDnldFd, "0", 1);
     } else {
       write(iFwDnldFd, "1", 1);
     }
-    usleep(10 * 1000);
+    pn7160_board_reset_wait();
   }
 }
 
@@ -442,11 +441,20 @@ void NfccAltTransport::wait4interrupt(void) {
 int NfccAltTransport::ConfigurePin()
 {
   // Assign IO pins
-  iInterruptFd = verifyPin(PIN_INT, 0, EDGE_RISING);
-  if (iInterruptFd < 0) return (NFCSTATUS_INVALID_DEVICE);
-  iEnableFd = verifyPin(PIN_ENABLE, 1, EDGE_NONE);
-  if (iEnableFd < 0) return (NFCSTATUS_INVALID_DEVICE);
-  iFwDnldFd = verifyPin(PIN_FWDNLD, 1, EDGE_NONE);
-  if (iFwDnldFd < 0) return (NFCSTATUS_INVALID_DEVICE);
+  if (!pn7160_board_configured()) return NFCSTATUS_INVALID_DEVICE;
+  const int irq = pn7160_board_irq(), ven = pn7160_board_ven(), dwl = pn7160_board_dwl();
+  iInterruptFd = verifyPin(irq, 0, EDGE_RISING);
+  if (iInterruptFd < 0) return NFCSTATUS_INVALID_DEVICE;
+  iEnableFd = verifyPin(ven, 1, EDGE_NONE);
+  if (iEnableFd < 0) {
+    close(iInterruptFd); iInterruptFd = -1;
+    return NFCSTATUS_INVALID_DEVICE;
+  }
+  iFwDnldFd = dwl < 0 ? -1 : verifyPin(dwl, 1, EDGE_NONE);
+  if (dwl >= 0 && iFwDnldFd < 0) {
+    close(iInterruptFd); close(iEnableFd);
+    iInterruptFd = iEnableFd = -1;
+    return NFCSTATUS_INVALID_DEVICE;
+  }
   return NFCSTATUS_SUCCESS;
 }
