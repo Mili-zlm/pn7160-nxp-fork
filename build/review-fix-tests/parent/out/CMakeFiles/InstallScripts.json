@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/cmake_install.cmake",
+		"/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

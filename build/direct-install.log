@@ -1,0 +1,17 @@
+-- Install configuration: "Release"
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libnfc_nci_linux-1.so.0.0.0
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libnfc_nci_linux-1.so.0
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libnfc_nci_linux-1.so
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libpn7160_fw.so.0.0.0
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libpn7160_fw.so.0
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libpn7160_fw.so
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/sbin/nfcDemoApp
+-- Set non-toolchain portion of runtime path of "/home/mili/pn7160-nxp-fork/build/direct/install/sbin/nfcDemoApp" to "$ORIGIN/../lib"
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/libnfc_nci_linux.so
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/include/linux_nfc_api.h
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/include/linux_nfc_factory_api.h
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/include/linux_nfc_api_compatibility.h
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/include/pn7160_board_config.h
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/etc/libnfc-nci.conf
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/etc/libnfc-nxp.conf
+-- Installing: /home/mili/pn7160-nxp-fork/build/direct/install/lib/pkgconfig/libnfc-nci.pc

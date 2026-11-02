@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -DNDEBUG "CMakeFiles/pn7160-board-config-test.dir/tests/board_config_test.c.o" "CMakeFiles/pn7160-board-config-test.dir/src/pn7160_board_config.cpp.o" -o pn7160-board-config-test

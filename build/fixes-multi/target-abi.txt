@@ -1,0 +1,1 @@
+/usr/bin/cc|/usr/bin/c++|64|x86_64|

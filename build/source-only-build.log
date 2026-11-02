@@ -1,0 +1,197 @@
+[  0%] Built target pn7160-source-sync
+[ 11%] Performing source-refresh step for 'pn7160-native'
+[ 22%] Performing configure step for 'pn7160-native'
+libtoolize: Consider adding '-I m4' to ACLOCAL_AMFLAGS in Makefile.am.
+libtoolize: putting auxiliary files in '.'.
+libtoolize: copying file './ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+libtoolize: copying file 'm4/libtool.m4'
+libtoolize: copying file 'm4/ltoptions.m4'
+libtoolize: copying file 'm4/ltsugar.m4'
+libtoolize: copying file 'm4/ltversion.m4'
+libtoolize: copying file 'm4/lt~obsolete.m4'
+libtoolize: Consider adding '-I m4' to ACLOCAL_AMFLAGS in Makefile.am.
+configure.ac:12: warning: The macro `AC_PROG_LIBTOOL' is obsolete.
+configure.ac:12: You should run autoupdate.
+m4/libtool.m4:99: AC_PROG_LIBTOOL is expanded from...
+configure.ac:12: the top level
+configure.ac:11: installing './compile'
+configure.ac:6: installing './missing'
+Makefile.am: installing './depcomp'
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a race-free mkdir -p... /usr/bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether the C++ compiler works... yes
+checking for C++ compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C++... yes
+checking whether /usr/bin/c++ accepts -g... yes
+checking for /usr/bin/c++ option to enable C++11 features... none needed
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of /usr/bin/c++... gcc3
+checking for gcc... /usr/bin/cc
+checking whether the compiler supports GNU C... yes
+checking whether /usr/bin/cc accepts -g... yes
+checking for /usr/bin/cc option to enable C11 features... none needed
+checking whether /usr/bin/cc understands -c and -o together... yes
+checking dependency style of /usr/bin/cc... gcc3
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking how to print strings... printf
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by /usr/bin/cc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert x86_64-pc-linux-gnu file names to x86_64-pc-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-pc-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /usr/bin/ld option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from /usr/bin/cc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if /usr/bin/cc supports -fno-rtti -fno-exceptions... no
+checking for /usr/bin/cc option to produce PIC... -fPIC -DPIC
+checking if /usr/bin/cc PIC flag -fPIC -DPIC works... yes
+checking if /usr/bin/cc static flag -static works... yes
+checking if /usr/bin/cc supports -c -o file.o... yes
+checking if /usr/bin/cc supports -c -o file.o... (cached) yes
+checking whether the /usr/bin/cc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking whether -lc should be explicitly linked in... no
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... yes
+checking whether to build static libraries... yes
+checking how to run the C++ preprocessor... /usr/bin/c++ -E
+checking for ld used by /usr/bin/c++... /usr/bin/ld -m elf_x86_64
+checking if the linker (/usr/bin/ld -m elf_x86_64) is GNU ld... yes
+checking whether the /usr/bin/c++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking for /usr/bin/c++ option to produce PIC... -fPIC -DPIC
+checking if /usr/bin/c++ PIC flag -fPIC -DPIC works... yes
+checking if /usr/bin/c++ static flag -static works... yes
+checking if /usr/bin/c++ supports -c -o file.o... yes
+checking if /usr/bin/c++ supports -c -o file.o... (cached) yes
+checking whether the /usr/bin/c++ linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... (cached) GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking for stdint.h... (cached) yes
+checking for stdlib.h... (cached) yes
+checking for string.h... (cached) yes
+checking for sys/time.h... yes
+checking for unistd.h... (cached) yes
+checking for fcntl.h... yes
+checking for sys/ioctl.h... yes
+checking for termios.h... yes
+checking for malloc.h... yes
+checking for _Bool... yes
+checking for stdbool.h that conforms to C99... yes
+checking for inline... inline
+checking for int32_t... yes
+checking for size_t... yes
+checking for uint16_t... yes
+checking for uint32_t... yes
+checking for uint64_t... yes
+checking for uint8_t... yes
+checking for int16_t... yes
+checking for int8_t... yes
+checking for ssize_t... yes
+checking for GNU libc compatible malloc... yes
+checking for GNU libc compatible realloc... yes
+checking for GNU libc compatible malloc... (cached) yes
+checking for gettimeofday... yes
+checking for memmove... yes
+checking for memset... yes
+checking for strerror... yes
+checking for strstr... yes
+checking for clock_gettime... yes
+checking for select... yes
+checking for dlopen... yes
+CFLAGS= -O3 -DNDEBUG
+CPPFLAGS=-DPN7160_USE_BUILD_DEFAULTS -I"/home/mili/pn7160-nxp-fork/build/native/generated"
+CXXFLAGS= -O3 -DNDEBUG -std=c++11 -include cstdint
+configure: LLCP1.3 support is disabled (no secure P2P)
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating libnfc-nci.pc
+config.status: creating config1.h
+config.status: config1.h is unchanged
+config.status: executing depfiles commands
+config.status: executing libtool commands
+[ 33%] Performing build step for 'pn7160-native'
+[ 44%] Performing install step for 'pn7160-native'
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/lib'
+ /bin/bash ./libtool   --mode=install /usr/bin/install -c   libnfc_nci_linux.la libpn7160_fw.la '/home/mili/pn7160-nxp-fork/build/native/install/lib'
+libtool: install: /usr/bin/install -c .libs/libnfc_nci_linux-1.so.0.0.0 /home/mili/pn7160-nxp-fork/build/native/install/lib/libnfc_nci_linux-1.so.0.0.0
+libtool: install: (cd /home/mili/pn7160-nxp-fork/build/native/install/lib && { ln -s -f libnfc_nci_linux-1.so.0.0.0 libnfc_nci_linux-1.so.0 || { rm -f libnfc_nci_linux-1.so.0 && ln -s libnfc_nci_linux-1.so.0.0.0 libnfc_nci_linux-1.so.0; }; })
+libtool: install: (cd /home/mili/pn7160-nxp-fork/build/native/install/lib && { ln -s -f libnfc_nci_linux-1.so.0.0.0 libnfc_nci_linux.so || { rm -f libnfc_nci_linux.so && ln -s libnfc_nci_linux-1.so.0.0.0 libnfc_nci_linux.so; }; })
+libtool: install: /usr/bin/install -c .libs/libnfc_nci_linux.lai /home/mili/pn7160-nxp-fork/build/native/install/lib/libnfc_nci_linux.la
+libtool: install: /usr/bin/install -c .libs/libpn7160_fw.so.0.0.0 /home/mili/pn7160-nxp-fork/build/native/install/lib/libpn7160_fw.so.0.0.0
+libtool: install: (cd /home/mili/pn7160-nxp-fork/build/native/install/lib && { ln -s -f libpn7160_fw.so.0.0.0 libpn7160_fw.so.0 || { rm -f libpn7160_fw.so.0 && ln -s libpn7160_fw.so.0.0.0 libpn7160_fw.so.0; }; })
+libtool: install: (cd /home/mili/pn7160-nxp-fork/build/native/install/lib && { ln -s -f libpn7160_fw.so.0.0.0 libpn7160_fw.so || { rm -f libpn7160_fw.so && ln -s libpn7160_fw.so.0.0.0 libpn7160_fw.so; }; })
+libtool: install: /usr/bin/install -c .libs/libpn7160_fw.lai /home/mili/pn7160-nxp-fork/build/native/install/lib/libpn7160_fw.la
+libtool: finish: PATH="/home/mili/.cargo/bin:/home/mili/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/sbin" ldconfig -n /home/mili/pn7160-nxp-fork/build/native/install/lib
+----------------------------------------------------------------------
+Libraries have been installed in:
+   /home/mili/pn7160-nxp-fork/build/native/install/lib
+
+If you ever happen to want to link against installed libraries
+in a given directory, LIBDIR, you must either use libtool, and
+specify the full pathname of the library, or use the '-LLIBDIR'
+flag during linking and do at least one of the following:
+   - add LIBDIR to the 'LD_LIBRARY_PATH' environment variable
+     during execution
+   - add LIBDIR to the 'LD_RUN_PATH' environment variable
+     during linking
+   - use the '-Wl,-rpath -Wl,LIBDIR' linker flag
+   - have your system administrator add LIBDIR to '/etc/ld.so.conf'
+
+See any operating system documentation about shared libraries for
+more information, such as the ld(1) and ld.so(8) manual pages.
+----------------------------------------------------------------------
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/sbin'
+  /bin/bash ./libtool   --mode=install /usr/bin/install -c nfcDemoApp '/home/mili/pn7160-nxp-fork/build/native/install/sbin'
+libtool: install: /usr/bin/install -c .libs/nfcDemoApp /home/mili/pn7160-nxp-fork/build/native/install/sbin/nfcDemoApp
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/etc'
+ /usr/bin/install -c -m 644 /home/mili/pn7160-nxp-fork/build/native/native-source/conf/libnfc-nci.conf /home/mili/pn7160-nxp-fork/build/native/native-source/conf/libnfc-nxp.conf '/home/mili/pn7160-nxp-fork/build/native/install/etc'
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/include'
+ /usr/bin/install -c -m 644 /home/mili/pn7160-nxp-fork/build/native/native-source/src/include/linux_nfc_api.h /home/mili/pn7160-nxp-fork/build/native/native-source/src/include/linux_nfc_factory_api.h /home/mili/pn7160-nxp-fork/build/native/native-source/src/include/linux_nfc_api_compatibility.h '/home/mili/pn7160-nxp-fork/build/native/install/include'
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/lib/pkgconfig'
+ /usr/bin/install -c -m 644 libnfc-nci.pc '/home/mili/pn7160-nxp-fork/build/native/install/lib/pkgconfig'
+ /usr/bin/mkdir -p '/home/mili/pn7160-nxp-fork/build/native/install/include'
+ /usr/bin/install -c -m 644 /home/mili/pn7160-nxp-fork/build/native/native-source/src/include/pn7160_board_config.h /home/mili/pn7160-nxp-fork/build/native/native-source/src/include/pn7160_board_defaults.h '/home/mili/pn7160-nxp-fork/build/native/install/include'
+[ 55%] Completed 'pn7160-native'
+[100%] Built target pn7160-native

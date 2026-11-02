@@ -1,0 +1,8 @@
+prefix=/home/mili/pn7160-nxp-fork/build/fixes/install
+libdir=/home/mili/pn7160-nxp-fork/build/fixes/install/lib
+includedir=/home/mili/pn7160-nxp-fork/build/fixes/install/include
+Name: libnfc-nci
+Description: NXP PN7160 Linux native library
+Version: 1.0
+Libs: -L${libdir} -lnfc_nci_linux
+Cflags: -I${includedir}

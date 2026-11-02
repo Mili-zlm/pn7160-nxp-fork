@@ -1,0 +1,10 @@
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/nfc_nci_linux.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/pn7160-library-alias.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/pn7160_fw.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/nfcDemoApp.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/edit_cache.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/rebuild_cache.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/list_install_components.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/install.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/install/local.dir
+/home/mili/pn7160-nxp-fork/build/fixes/CMakeFiles/install/strip.dir

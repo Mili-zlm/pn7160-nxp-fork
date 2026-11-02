@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native-complete.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-build.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-configure.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-download.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-install.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-mkdir.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-patch.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-source-refresh.rule"
+		},
+		{
+			"file" : "/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"pn7160-native"
+		],
+		"name" : "pn7160-native"
+	}
+}

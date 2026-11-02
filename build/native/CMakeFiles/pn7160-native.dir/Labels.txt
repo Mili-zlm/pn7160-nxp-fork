@@ -1,0 +1,14 @@
+# Target labels
+ pn7160-native
+# Source files and their labels
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native.rule
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native-complete.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-build.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-configure.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-download.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-install.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-mkdir.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-patch.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-source-refresh.rule
+/home/mili/pn7160-nxp-fork/build/native/native-project/src/pn7160-native-stamp/pn7160-native-update.rule

@@ -1,0 +1,12 @@
+# Hashes of file build rules.
+e0f86fcfd8a78b8d6d350d83982079ba CMakeFiles/pn7160-native
+9322b4b9a1845d3d5c0ae14d88c6a2d8 CMakeFiles/pn7160-native-complete
+c3d635c9fec69ba769f9c30547cb467e CMakeFiles/pn7160-source-sync
+d522dfae9ff29002b446cc4b229d3163 native-project/src/pn7160-native-stamp/pn7160-native-build
+7d0a7b0c43a394170a5b0408c306005a native-project/src/pn7160-native-stamp/pn7160-native-configure
+656b8de34f18247e7e1e5e0691454440 native-project/src/pn7160-native-stamp/pn7160-native-download
+99181172f5afb17ec6941e86a93bd5b4 native-project/src/pn7160-native-stamp/pn7160-native-install
+9e57c5c186ab490347c641c8863d838a native-project/src/pn7160-native-stamp/pn7160-native-mkdir
+3cd06980ac71ed18d877a1d47f1c04bd native-project/src/pn7160-native-stamp/pn7160-native-patch
+a75d0168ef29d1c7113b0606580c7c85 native-project/src/pn7160-native-stamp/pn7160-native-source-refresh
+fdb8525bbc5832b9dc9e38f400cac4bf native-project/src/pn7160-native-stamp/pn7160-native-update

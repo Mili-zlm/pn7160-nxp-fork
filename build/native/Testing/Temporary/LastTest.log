@@ -1,0 +1,18 @@
+Start testing: Oct 30 17:21 CST
+----------------------------------------------------------
+1/1 Testing: board-config
+1/1 Test: board-config
+Command: "/home/mili/pn7160-nxp-fork/build/native/pn7160-board-config-test"
+Directory: /home/mili/pn7160-nxp-fork/build/native
+"board-config" start time: Oct 30 17:21 CST
+Output:
+----------------------------------------------------------
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"board-config" end time: Oct 30 17:21 CST
+"board-config" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 30 17:21 CST

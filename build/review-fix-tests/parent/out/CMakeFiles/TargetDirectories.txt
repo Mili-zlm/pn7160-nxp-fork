@@ -1,0 +1,16 @@
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/edit_cache.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/rebuild_cache.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/list_install_components.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/install.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/install/local.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/CMakeFiles/install/strip.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/nfc_nci_linux.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/pn7160-library-alias.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/pn7160_fw.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/nfcDemoApp.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/edit_cache.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/rebuild_cache.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/list_install_components.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/install.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/install/local.dir
+/home/mili/pn7160-nxp-fork/build/review-fix-tests/parent/out/pn7160/CMakeFiles/install/strip.dir

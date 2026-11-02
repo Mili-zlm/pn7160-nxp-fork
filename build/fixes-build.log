@@ -1,0 +1,209 @@
+[1/8] Building CXX object CMakeFiles/nfc_nci_linux.dir/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc.o
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:25: warning: "UNUSED" redefined
+   25 | #define UNUSED(x) (void)(x)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:30:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/common/phNfcTypes.h:308: note: this is the location of the previous definition
+  308 | #define UNUSED(X) (void)(X);
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:90: warning: "S_ISREG" redefined
+   90 | #define S_ISREG( m ) (((m) & S_IFMT) == S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/macro.h:23,
+                 from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/usr/include/x86_64-linux-gnu/sys/stat.h:128: note: this is the location of the previous definition
+  128 | #define S_ISREG(mode)    __S_ISTYPE((mode), __S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:94: warning: "TEMP_FAILURE_RETRY" redefined
+   94 | #define TEMP_FAILURE_RETRY
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:28:
+/usr/include/unistd.h:1134: note: this is the location of the previous definition
+ 1134 | # define TEMP_FAILURE_RETRY(expression) \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:123: warning: "NXPLOG_EXTNS_D" redefined
+  123 | #define NXPLOG_EXTNS_D(...)                                       \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:75: note: this is the location of the previous definition
+   75 | #define NXPLOG_EXTNS_D(...) {                                     \
+      | 
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc: In function ‘int SpiRead(int, uint8_t*, int)’:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:164:19: warning: converting to non-pointer type ‘__u64’ {aka ‘long long unsigned int’} from NULL [-Wconversion-null]
+  164 |   spi[0].rx_buf = NULL;                 // receive into "data"
+      |                   ^~~~
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltSpiTransport.cc:174:19: warning: converting to non-pointer type ‘__u64’ {aka ‘long long unsigned int’} from NULL [-Wconversion-null]
+  174 |   spi[1].tx_buf = NULL;                    // transmit from "data"
+      |                   ^~~~
+[2/8] Building CXX object CMakeFiles/nfc_nci_linux.dir/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc.o
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:25: warning: "UNUSED" redefined
+   25 | #define UNUSED(x) (void)(x)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccI2cTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:29:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/common/phNfcTypes.h:308: note: this is the location of the previous definition
+  308 | #define UNUSED(X) (void)(X);
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:90: warning: "S_ISREG" redefined
+   90 | #define S_ISREG( m ) (((m) & S_IFMT) == S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/macro.h:23,
+                 from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/usr/include/x86_64-linux-gnu/sys/stat.h:128: note: this is the location of the previous definition
+  128 | #define S_ISREG(mode)    __S_ISTYPE((mode), __S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:94: warning: "TEMP_FAILURE_RETRY" redefined
+   94 | #define TEMP_FAILURE_RETRY
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:28:
+/usr/include/unistd.h:1134: note: this is the location of the previous definition
+ 1134 | # define TEMP_FAILURE_RETRY(expression) \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:123: warning: "NXPLOG_EXTNS_D" redefined
+  123 | #define NXPLOG_EXTNS_D(...)                                       \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:75: note: this is the location of the previous definition
+   75 | #define NXPLOG_EXTNS_D(...) {                                     \
+      | 
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc: In member function ‘int NfccAltTransport::verifyPin(int, int, int)’:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:352:30: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  352 |             char* edge_str = "none";
+      |                              ^~~~~~
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:355:28: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  355 |                 edge_str = "rising";
+      |                            ^~~~~~~~
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:358:28: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  358 |                 edge_str = "falling";
+      |                            ^~~~~~~~~
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.cc:361:28: warning: ISO C++ forbids converting a string constant to ‘char*’ [-Wwrite-strings]
+  361 |                 edge_str = "both";
+      |                            ^~~~~~
+[3/8] Building CXX object CMakeFiles/nfc_nci_linux.dir/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc.o
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:25: warning: "UNUSED" redefined
+   25 | #define UNUSED(x) (void)(x)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccI2cTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:19:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/common/phNfcTypes.h:308: note: this is the location of the previous definition
+  308 | #define UNUSED(X) (void)(X);
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:90: warning: "S_ISREG" redefined
+   90 | #define S_ISREG( m ) (((m) & S_IFMT) == S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/macro.h:23,
+                 from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/usr/include/x86_64-linux-gnu/sys/stat.h:128: note: this is the location of the previous definition
+  128 | #define S_ISREG(mode)    __S_ISTYPE((mode), __S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:94: warning: "TEMP_FAILURE_RETRY" redefined
+   94 | #define TEMP_FAILURE_RETRY
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/common/phNfcTypes.h:25,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccI2cTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:19:
+/usr/include/unistd.h:1134: note: this is the location of the previous definition
+ 1134 | # define TEMP_FAILURE_RETRY(expression) \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:123: warning: "NXPLOG_EXTNS_D" redefined
+  123 | #define NXPLOG_EXTNS_D(...)                                       \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/NfccTransportFactory.cc:24:
+/home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:75: note: this is the location of the previous definition
+   75 | #define NXPLOG_EXTNS_D(...) {                                     \
+      | 
+[4/8] Building CXX object CMakeFiles/nfc_nci_linux.dir/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc.o
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:25: warning: "UNUSED" redefined
+   25 | #define UNUSED(x) (void)(x)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.h:20,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:32:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/common/phNfcTypes.h:308: note: this is the location of the previous definition
+  308 | #define UNUSED(X) (void)(X);
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:90: warning: "S_ISREG" redefined
+   90 | #define S_ISREG( m ) (((m) & S_IFMT) == S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/macro.h:23,
+                 from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/usr/include/x86_64-linux-gnu/sys/stat.h:128: note: this is the location of the previous definition
+  128 | #define S_ISREG(mode)    __S_ISTYPE((mode), __S_IFREG)
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:22,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/home/mili/pn7160-nxp-fork/src/android/utility/macro.h:94: warning: "TEMP_FAILURE_RETRY" redefined
+   94 | #define TEMP_FAILURE_RETRY
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:30:
+/usr/include/unistd.h:1134: note: this is the location of the previous definition
+ 1134 | # define TEMP_FAILURE_RETRY(expression) \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:123: warning: "NXPLOG_EXTNS_D" redefined
+  123 | #define NXPLOG_EXTNS_D(...)                                       \
+      | 
+In file included from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/log/phNxpLog.h:21,
+                 from /home/mili/pn7160-nxp-fork/src/nfcandroid_nfc_hidlimpl/halimpl/tml/transport/NfccAltI2cTransport.cc:34:
+/home/mili/pn7160-nxp-fork/src/android/utility/base/logging.h:75: note: this is the location of the previous definition
+   75 | #define NXPLOG_EXTNS_D(...) {                                     \
+      | 
+[5/8] Linking CXX shared library custom-lib/libnfc_nci_linux-1.so.0.0.0
+[6/8] Creating library symlink custom-lib/libnfc_nci_linux-1.so.0 custom-lib/libnfc_nci_linux-1.so
+[7/8] cd /home/mili/pn7160-nxp-fork/build/fixes && /home/mili/.local/lib/python3.10/site-packages/cmake/data/bin/cmake -E create_symlink libnfc_nci_linux-1.so.0.0.0 /home/mili/pn7160-nxp-fork/build/fixes/custom-lib/libnfc_nci_linux.so
+[8/8] Linking C executable nfcDemoApp

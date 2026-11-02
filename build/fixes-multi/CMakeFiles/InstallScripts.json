@@ -1,0 +1,11 @@
+{
+	"Configs" : 
+	[
+		"Debug"
+	],
+	"InstallScripts" : 
+	[
+		"/home/mili/pn7160-nxp-fork/build/fixes-multi/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

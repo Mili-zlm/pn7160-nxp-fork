@@ -1,0 +1,7 @@
+[1/7] Creating library symlink libnfc_nci_linux-1.so.0 libnfc_nci_linux-1.so
+[2/7] Building C object CMakeFiles/nfcDemoApp.dir/demoapp/tools.c.o
+[3/7] Linking C executable nfcDemoApp
+[4/7] Building CXX object CMakeFiles/pn7160_fw.dir/firmware/pn7160/phDnldNfc_ImageInfo.cc.o
+[5/7] Building CXX object CMakeFiles/pn7160_fw.dir/firmware/pn7160/phDnldNfc_UpdateSeq.cc.o
+[6/7] Linking CXX shared library libpn7160_fw.so.0.0.0
+[7/7] Creating library symlink libpn7160_fw.so.0 libpn7160_fw.so

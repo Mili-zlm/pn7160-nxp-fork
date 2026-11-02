@@ -1,0 +1,16 @@
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libnfc_nci_linux-1.so.0.0.0
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libnfc_nci_linux-1.so.0
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libnfc_nci_linux-1.so
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libpn7160_fw.so.0.0.0
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libpn7160_fw.so.0
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libpn7160_fw.so
+/home/mili/pn7160-nxp-fork/build/fixes/install/tools/bin/nfcDemoApp
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/libnfc_nci_linux.so
+/home/mili/pn7160-nxp-fork/build/fixes/install/include/linux_nfc_api.h
+/home/mili/pn7160-nxp-fork/build/fixes/install/include/linux_nfc_factory_api.h
+/home/mili/pn7160-nxp-fork/build/fixes/install/include/linux_nfc_api_compatibility.h
+/home/mili/pn7160-nxp-fork/build/fixes/install/include/pn7160_board_config.h
+/home/mili/pn7160-nxp-fork/build/fixes/install/include/pn7160_diag.h
+/home/mili/pn7160-nxp-fork/build/fixes/install/etc/libnfc-nci.conf
+/home/mili/pn7160-nxp-fork/build/fixes/install/etc/libnfc-nxp.conf
+/home/mili/pn7160-nxp-fork/build/fixes/install/lib/pkgconfig/libnfc-nci.pc

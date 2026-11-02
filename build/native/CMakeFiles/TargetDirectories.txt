@@ -1,0 +1,4 @@
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-source-sync.dir
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/pn7160-native.dir
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/edit_cache.dir
+/home/mili/pn7160-nxp-fork/build/native/CMakeFiles/rebuild_cache.dir

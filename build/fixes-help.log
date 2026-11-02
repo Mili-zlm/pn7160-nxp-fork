@@ -1,0 +1,13 @@
+
+COMMAND: 
+	poll	Polling mode 	 e.g. <nfcDemoApp poll >
+	write	Write tag 	 e.g. <nfcDemoApp write --type=Text -l en -r "Test">
+	share	Tag Emulation Mode 	 e.g. <nfcDemoApp share -t URI -u http://www.nxp.com>
+	push	Push to device 	 e.g. <nfcDemoApp push -t URI -u http://www.nxp.com>
+	    	               	 e.g. <nfcDemoApp push --type=mime -m "application/vnd.bluetooth.ep.oob" -d "2200AC597405AF1C0E0947616C617879204E6F74652033040D0C024005031E110B11">
+
+Help Options:
+-h, --help                       Show help options
+
+
+
